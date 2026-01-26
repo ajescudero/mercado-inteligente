@@ -1,57 +1,54 @@
-import { getCachedSearch, setCachedSearch } from "./db";
+import { getCachedSearch, setCachedSearch, searchProductsInDb } from "./db";
 import { Product } from "./types";
 
 const SIX_HOURS = 6 * 60 * 60 * 1000;
 
-// Mock "Internet Search" - simulates finding products
-async function mockInternetSearch(term: string): Promise<Product[]> {
-    console.log(`🌍 Searching internet for: ${term}...`);
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Generate fake results based on the term
-    const brands = ["La Serenísima", "Coto Brand", "Arcor", "Great Value"];
-    const stores = ["Coto", "Jumbo", "Carrefour", "Dia%"];
-
-    return Array.from({ length: 4 }).map((_, i) => ({
-        id: crypto.randomUUID(),
-        name: `${term} ${brands[i]}`,
-        brand: brands[i],
-        price: Math.floor(Math.random() * 2000) + 500, // Random price 500-2500
-        currency: "ARS",
-        store: stores[i],
-        quantity: "1 un"
-    }));
-}
-
-export async function searchProduct(term: string): Promise<{ data: Product[], source: 'CACHE' | 'NETWORK' }> {
+export async function searchProduct(
+    term: string,
+    lat?: number,
+    lng?: number
+): Promise<{ data: Product[], source: 'CACHE' | 'DB' }> {
     const normalizedTerm = term.toLowerCase().trim();
 
-    // 1. Check Cache
-    const cached = getCachedSearch(normalizedTerm);
-
-    if (cached) {
-        const isFresh = (Date.now() - cached.updatedAt) < SIX_HOURS;
-        if (isFresh) {
-            console.log(`✅ Returning cached result for: ${term}`);
-            return {
-                data: JSON.parse(cached.results),
-                source: 'CACHE'
-            };
-        } else {
-            console.log(`⚠️ Cache expired for: ${term}`);
+    // 1. Check Cache (Only if no location, or adjust cache key)
+    // For now, let's skip cache if location is provided to ensure fresh sorting
+    if (lat === undefined) {
+        const cached = getCachedSearch(normalizedTerm);
+        if (cached) {
+            const isFresh = (Date.now() - cached.updatedAt) < SIX_HOURS;
+            if (isFresh) {
+                return {
+                    data: JSON.parse(cached.results),
+                    source: 'CACHE'
+                };
+            }
         }
     }
 
-    // 2. Perform Network Search
-    const results = await mockInternetSearch(term);
+    // 2. Perform DB Search
+    const dbResults = searchProductsInDb(term, lat, lng);
 
-    // 3. Update Cache
-    setCachedSearch(normalizedTerm, results);
+    const results: Product[] = dbResults.map(item => ({
+        id: item.id,
+        ean: item.ean,
+        name: item.name,
+        brand: item.brand,
+        price: item.price,
+        currency: "ARS",
+        store: item.store,
+        address: item.address,
+        locality: item.locality,
+        image: item.image,
+        quantity: item.distance ? `${item.distance.toFixed(1)} km` : "1 un"
+    }));
+
+    // 3. Update Cache (Only for generic searches)
+    if (results.length > 0 && lat === undefined) {
+        setCachedSearch(normalizedTerm, results);
+    }
 
     return {
         data: results,
-        source: 'NETWORK'
+        source: 'DB'
     };
 }

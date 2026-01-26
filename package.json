@@ -6,18 +6,28 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "update-data": "npx tsx data-pipeline/sepa-ingestor.ts && npx tsx data-pipeline/load-db.ts"
   },
   "dependencies": {
+    "@types/lodash": "^4.17.23",
+    "adm-zip": "^0.5.16",
+    "axios": "^1.13.2",
     "better-sqlite3": "^12.6.2",
+    "cheerio": "^1.1.2",
+    "csv-parser": "^3.2.0",
+    "lodash": "^4.17.23",
     "lucide-react": "^0.563.0",
     "next": "16.1.4",
+    "openai": "^6.16.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/adm-zip": "^0.5.7",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/cheerio": "^0.22.35",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
