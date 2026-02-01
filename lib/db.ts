@@ -70,7 +70,60 @@ const COMERCIO_BRANDS: Record<string, string> = {
   '24': 'Día',
 };
 
-export function searchProductsInDb(term: string, userLat?: number, userLng?: number): DbProduct[] {
+export interface TermMapping {
+  user_term: string;
+  search_terms: string[];
+  category: string;
+  confidence: number;
+}
+
+/**
+ * Get term mapping from database
+ */
+export function getTermMapping(userTerm: string): TermMapping | null {
+  const normalized = userTerm.toLowerCase().trim();
+
+  try {
+    const row = db.prepare(`
+      SELECT user_term, search_terms, category, confidence
+      FROM term_mappings
+      WHERE user_term = ?
+    `).get(normalized) as any;
+
+    if (!row) return null;
+
+    return {
+      user_term: row.user_term,
+      search_terms: JSON.parse(row.search_terms),
+      category: row.category,
+      confidence: row.confidence
+    };
+  } catch (e) {
+    console.error("Error getting term mapping:", e);
+    return null;
+  }
+}
+
+/**
+ * Update mapping usage statistics
+ */
+export function updateMappingStats(userTerm: string, success: boolean) {
+  const normalized = userTerm.toLowerCase().trim();
+
+  try {
+    db.prepare(`
+      UPDATE term_mappings
+      SET usage_count = usage_count + 1,
+          success_count = success_count + ?,
+          last_used = CURRENT_TIMESTAMP
+      WHERE user_term = ?
+    `).run(success ? 1 : 0, normalized);
+  } catch (e) {
+    console.error("Error updating mapping stats:", e);
+  }
+}
+
+export function searchProductsInDb(term: string, userLat?: number, userLng?: number, maxDistance: number = 20): DbProduct[] {
   const safeTerm = term.trim();
   if (!safeTerm) return [];
 
@@ -94,9 +147,11 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
       ${hasLocation ? `, haversine(${userLat}, ${userLng}, s.lat, s.lng) as distance` : ''}
     FROM products p
     JOIN stores s ON p.storeId = s.id
-    WHERE price > 0 AND (${whereClause})
+    WHERE price > 0 
+      AND (${whereClause})
+      ${hasLocation ? `AND haversine(${userLat}, ${userLng}, s.lat, s.lng) < ${maxDistance}` : ''}
     ORDER BY p.price ASC
-    LIMIT 100
+    LIMIT 300
   `;
 
   try {
@@ -134,14 +189,10 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
     });
 
     // Ranking Logic:
-    // 1. If location is available: Sort by (Price * Distance_Factor) or just strictly by price within a radius.
-    // Let's go with: Best price first, but group by product-chain.
-    // User requested "Leave only lowest prices and close to location".
-
-    // First, let's sort by price.
+    // 1. Sort by price first
     let sorted = mapped.sort((a, b) => a.price - b.price);
 
-    // If we have location, let's prioritize things within 10km if price is similar (+/- 10%)
+    // 2. If location is available, prioritize closer stores when prices are similar
     if (hasLocation) {
       sorted.sort((a, b) => {
         const distA = a.distance || 0;
@@ -156,12 +207,53 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
       });
     }
 
+    // Return up to 50 results (sorted by price/distance)
     return sorted.slice(0, 50);
-
   } catch (e) {
     console.error("DB Search Error:", e);
     return [];
   }
+}
+
+/**
+ * Search products using term mappings for better results
+ */
+export function searchProductsWithMapping(
+  userTerm: string,
+  userLat?: number,
+  userLng?: number,
+  maxDistance: number = 20
+): DbProduct[] {
+  // 1. Try to get mapping
+  const mapping = getTermMapping(userTerm);
+
+  // 2. Determine search terms
+  const searchTerms = mapping
+    ? mapping.search_terms
+    : [userTerm]; // fallback to original
+
+  // 3. Search with all terms (OR logic)
+  const allResults: DbProduct[] = [];
+  const seenIds = new Set<string>();
+
+  for (const term of searchTerms) {
+    const results = searchProductsInDb(term, userLat, userLng, maxDistance);
+
+    for (const product of results) {
+      if (!seenIds.has(product.id)) {
+        seenIds.add(product.id);
+        allResults.push(product);
+      }
+    }
+  }
+
+  // 4. Update stats
+  if (mapping) {
+    updateMappingStats(userTerm, allResults.length > 0);
+  }
+
+  // 5. Sort by price and return
+  return allResults.sort((a, b) => a.price - b.price).slice(0, 50);
 }
 
 export function getProductSuggestions(term: string): string[] {

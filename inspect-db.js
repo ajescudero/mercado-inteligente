@@ -12,15 +12,15 @@ console.log("\n--- TABLE: stores ---");
 const storesInfo = db.prepare("PRAGMA table_info(stores)").all();
 console.table(storesInfo);
 
-console.log("\n--- SAMPLE: Naranja ---");
-const results = db.prepare(`
-    SELECT p.*, s.name as storeName 
-    FROM products p 
-    JOIN stores s ON p.storeId = s.id 
-    WHERE p.description LIKE '%naranja%' 
-    LIMIT 10
-`).all();
-console.table(results);
+console.log("\n--- COUNT: Leche ---");
+const milkCount = db.prepare("SELECT count(*) as count FROM products WHERE description LIKE '%leche%'").get();
+const milkStores = db.prepare("SELECT DISTINCT s.name FROM products p JOIN stores s ON p.storeId = s.id WHERE p.description LIKE '%leche%'").all();
+console.log("Total Leche products:", milkCount.count);
+console.log("Stores selling Leche:", milkStores.map(s => s.name));
+
+console.log("\n--- SEARCH: Atomo ---");
+const atomoStores = db.prepare("SELECT * FROM stores WHERE name LIKE '%atomo%' OR name LIKE '%millan%'").all();
+console.table(atomoStores);
 
 console.log("\n--- STATS ---");
 const stats = db.prepare("SELECT count(*) as count FROM products WHERE price <= 0").get();

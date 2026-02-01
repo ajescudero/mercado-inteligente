@@ -9,6 +9,12 @@ import { pipeline } from 'stream/promises';
 const BASE_dataset_URL = 'https://datos.produccion.gob.ar/dataset/sepa-precios';
 const DOWNLOAD_DIR = path.join(process.cwd(), 'temp_descargas');
 const OUTPUT_FILE = path.join(process.cwd(), 'precios_mendoza.json');
+const LOG_FILE = path.join(process.cwd(), 'ingestion_debug.log');
+
+function log(message: string) {
+    console.log(message);
+    fs.appendFileSync(LOG_FILE, message + '\n');
+}
 
 // Constantes de filtrado
 const TARGET_PROVINCE_CODE = 'AR-M'; // Mendoza
@@ -18,8 +24,12 @@ const TARGET_LOCALITIES = [
     'LAVALLE',
     'MENDOZA', 'CAPITAL', 'CIUDAD',
     'VILLA NUEVA', 'DORREGO', 'LAS CAÑAS', // Barrios de Guaymallen
-    'GUTIERREZ', 'LUZURIAGA' // Distritos Maibu
+    'GUTIERREZ', 'LUZURIAGA', // Distritos Maibu
+    'LAS HERAS', 'GODOY CRUZ', 'LUJAN DE CUYO', 'SAN MARTIN' // Added common Mendoza areas
 ];
+
+// Comodines para incluir siempre (supera chequeo de localidad estricto, pero debe ser Mendoza)
+const TARGET_RETAILERS_KEYWORDS = ['ATOMO', 'MILLAN', 'MILLÁN'];
 
 // Estructura para guardar resultados
 interface Store {
@@ -47,7 +57,7 @@ if (!fs.existsSync(DOWNLOAD_DIR)) {
 }
 
 async function getLatestDownloadUrl(): Promise<string | null> {
-    console.log('🔎 Buscando el archivo de precios más reciente en SEPA...');
+    log('🔎 Buscando el archivo de precios más reciente en SEPA...');
     try {
         const { data } = await axios.get(BASE_dataset_URL);
         const $ = cheerio.load(data);
@@ -70,14 +80,14 @@ async function getLatestDownloadUrl(): Promise<string | null> {
 
 async function downloadFile(url: string, destPath: string): Promise<void> {
     if (fs.existsSync(destPath)) {
-        console.log(`ℹ️  El archivo ya existe. Usando caché local.`);
+        log(`ℹ️  El archivo ya existe. Usando caché local.`);
         return;
     }
-    console.log(`⬇️  Descargando archivo...`);
+    log(`⬇️  Descargando archivo...`);
     const writer = fs.createWriteStream(destPath);
     const response = await axios({ url, method: 'GET', responseType: 'stream' });
     await pipeline(response.data, writer);
-    console.log('✅ Descarga completada.');
+    log('✅ Descarga completada.');
 }
 
 function normalizeText(text: string): string {
@@ -93,7 +103,7 @@ async function processRetailerZip(
     globalStores: Map<string, Store>,
     stats: { storesFound: number, productsFound: number }
 ) {
-    // console.log(`   > Examinando: ${zipEntry.entryName}`);
+    log(`   > Examinando: ${zipEntry.entryName}`);
 
     // Leer el buffer del ZIP interno
     let innerZip: AdmZip;
@@ -129,10 +139,14 @@ async function processRetailerZip(
 
                 // Chequear Provincia
                 if (prov === TARGET_PROVINCE_CODE) {
-                    // Chequear Localidad (comparación laxa)
+                    // 1. Chequeo por Nombre de Comercio (Prioridad)
+                    const retailerName = normalizeText(row.sucursales_nombre || '');
+                    const matchesRetailer = TARGET_RETAILERS_KEYWORDS.some(k => retailerName.includes(k));
+
+                    // 2. Chequeo por Localidad
                     const matchesLocality = TARGET_LOCALITIES.some(target => loc.includes(target));
 
-                    if (matchesLocality) {
+                    if (matchesRetailer || matchesLocality) {
                         const storeId = row.id_sucursal;
                         validStoreIds.add(storeId);
                         globalStores.set(storeId, {
@@ -158,7 +172,7 @@ async function processRetailerZip(
     }
 
     stats.storesFound += validStoreIds.size;
-    console.log(`   ✅ Encontradas ${validStoreIds.size} sucursales relevantes en ${zipEntry.entryName}`);
+    log(`   ✅ Encontradas ${validStoreIds.size} sucursales relevantes en ${zipEntry.entryName}`);
 
     // 2. Procesar productos.csv solo para las tiendas válidas
     const productosEntry = innerEntries.find(e => e.entryName.endsWith('productos.csv'));
@@ -194,7 +208,7 @@ async function processRetailerZip(
 }
 
 async function main() {
-    console.log('🚀 Iniciando Pipeline: Filtro Mendoza (Guaymallén, Capital, Maipú, Lavalle)');
+    log('🚀 Iniciando Pipeline: Filtro Mendoza (Guaymallén, Capital, Maipú, Lavalle)');
 
     const url = await getLatestDownloadUrl();
     if (!url) return;
@@ -204,13 +218,13 @@ async function main() {
 
     await downloadFile(url, zipFilePath);
 
-    console.log('📦 Abriendo archivo ZIP maestro...');
+    log('📦 Abriendo archivo ZIP maestro...');
     const zip = new AdmZip(zipFilePath);
     const zipEntries = zip.getEntries();
 
     // Filtrar zips internos
     const retailerZips = zipEntries.filter(entry => entry.entryName.endsWith('.zip'));
-    console.log(`📊 Procesando ${retailerZips.length} cadenas de supermercados...`);
+    log(`📊 Procesando ${retailerZips.length} cadenas de supermercados...`);
 
     const capturedProducts: PriceRecord[] = [];
     const globalStores = new Map<string, Store>();
@@ -221,9 +235,9 @@ async function main() {
         await processRetailerZip(entry, capturedProducts, globalStores, stats);
     }
 
-    console.log(`\n🎉 Proceso Finalizado!`);
-    console.log(`   📍 Sucursales encontradas: ${globalStores.size}`);
-    console.log(`   🍎 Precios capturados: ${stats.productsFound}`);
+    log(`\n🎉 Proceso Finalizado!`);
+    log(`   📍 Sucursales encontradas: ${globalStores.size}`);
+    log(`   🍎 Precios capturados: ${stats.productsFound}`);
 
     // Guardar resultado
     const OUTPUT_STORES_FILE = path.join(process.cwd(), 'stores_mendoza.json');
@@ -231,7 +245,7 @@ async function main() {
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(capturedProducts, null, 2));
     fs.writeFileSync(OUTPUT_STORES_FILE, JSON.stringify(Array.from(globalStores.values()), null, 2));
 
-    console.log(`💾 Resultados guardados en: `);
+    log(`💾 Resultados guardados en: `);
     console.log(`   - ${OUTPUT_FILE}`);
     console.log(`   - ${OUTPUT_STORES_FILE}`);
 }

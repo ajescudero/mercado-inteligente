@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "update-data": "npx tsx data-pipeline/sepa-ingestor.ts && npx tsx data-pipeline/load-db.ts"
+    "update-data": "npx tsx data-pipeline/sepa-ingestor.ts && npx tsx data-pipeline/load-db.ts",
+    "test:supermarkets": "npx tsx test-supermarkets.ts"
   },
   "dependencies": {
     "@types/lodash": "^4.17.23",
