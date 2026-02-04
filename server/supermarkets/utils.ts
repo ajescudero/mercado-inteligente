@@ -35,8 +35,19 @@ export function parseArgentinePrice(priceStr: string | number): number {
     } else if (cleaned.includes(',')) {
         // Only comma: assume it's decimal separator (Argentine format)
         cleaned = cleaned.replace(/,/g, '.');
+    } else if (cleaned.includes('.')) {
+        // Only dot: This is tricky. In Argentina it could be thousands (1.500) or decimal (1.5).
+        // For supermarket prices, if there are 3 digits after the last dot, it's likely thousands.
+        // Example: "1.500" -> 1500, but "1.5" -> 1.5
+        const parts = cleaned.split('.');
+        const lastPart = parts[parts.length - 1];
+
+        if (lastPart.length === 3) {
+            // Assume thousands
+            cleaned = cleaned.replace(/\./g, '');
+        }
+        // Otherwise keep it as decimal
     }
-    // If only dot, assume it's decimal separator (already correct)
 
     const parsed = parseFloat(cleaned);
     return isNaN(parsed) ? 0 : parsed;
@@ -96,4 +107,45 @@ export class RateLimiter {
 
         this.lastRequest = Date.now();
     }
+}
+
+/**
+ * Calculate similarity between two strings (0 to 1)
+ * Uses Sørensen–Dice coefficient on bigrams for robust comparison
+ */
+export function calculateStringSimilarity(str1: string, str2: string): number {
+    const s1 = str1.toLowerCase().replace(/\s+/g, '');
+    const s2 = str2.toLowerCase().replace(/\s+/g, '');
+
+    if (s1 === s2) return 1;
+    if (s1.length < 2 || s2.length < 2) return 0;
+
+    const bigrams1 = new Set<string>();
+    for (let i = 0; i < s1.length - 1; i++) {
+        bigrams1.add(s1.substring(i, i + 2));
+    }
+
+    const bigrams2 = new Set<string>();
+    for (let i = 0; i < s2.length - 1; i++) {
+        bigrams2.add(s2.substring(i, i + 2));
+    }
+
+    let intersection = 0;
+    for (const bigram of bigrams1) {
+        if (bigrams2.has(bigram)) {
+            intersection++;
+        }
+    }
+
+    return (2 * intersection) / (bigrams1.size + bigrams2.size);
+}
+/**
+ * Clean and truncate query for VTEX search compatibility
+ */
+export function cleanQueryForVTEX(query: string): string {
+    return query
+        .replace(/[^\w\s]/gi, ' ') // Replace special chars with spaces
+        .replace(/\s+/g, ' ')      // Normalize spaces
+        .trim()
+        .substring(0, 50);          // Truncate reached limits
 }

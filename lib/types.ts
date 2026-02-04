@@ -11,7 +11,7 @@ export interface Product {
     image?: string;
     quantity?: string;
     distance?: number;
-    source?: string; // 'vea' | 'atomo' | 'carrefour' | 'sepa'
+    source?: string; // 'vea' | 'atomo' | 'carrefour'
     updated?: string; // ISO timestamp for real-time data
 }
 

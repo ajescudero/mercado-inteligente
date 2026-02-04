@@ -7,6 +7,8 @@ export interface Product {
     store: 'vea' | 'atomo' | 'carrefour';
     storeLocation?: string;
     url?: string;
+    category?: string;
+    categories?: string[];
 }
 
 export interface SupermarketResponse {

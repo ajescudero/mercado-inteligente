@@ -1,5 +1,5 @@
 import { Product, SupermarketResponse } from './types';
-import { SimpleCache } from './utils';
+import { SimpleCache, calculateStringSimilarity } from './utils';
 import { searchVea } from './vea';
 import { searchAtomo } from './atomo';
 import { searchCarrefour } from './carrefour';
@@ -93,6 +93,52 @@ export class SupermarketClient {
         }
 
         return response;
+    }
+
+    /**
+     * Find best matching products for a specific item in all stores
+     */
+    async findEquivalents(productName: string): Promise<Product[]> {
+        console.log(`[SupermarketClient] Finding equivalents for: ${productName}`);
+
+        // Use searchAll to get results from everyone
+        const allPotentialMatches = await this.searchAll(productName);
+
+        const stores: Array<'vea' | 'atomo' | 'carrefour'> = ['vea', 'atomo', 'carrefour'];
+        const bestMatches: Product[] = [];
+
+        for (const store of stores) {
+            const storeProducts = allPotentialMatches.filter(p => p.store === store);
+            if (storeProducts.length === 0) continue;
+
+            // Sort by similarity and take the best one
+            const scored = storeProducts.map(p => {
+                const similarity = calculateStringSimilarity(productName, p.name);
+
+                // Bonus for substring match (case-insensitive)
+                const queryLower = productName.toLowerCase();
+                const nameLower = p.name.toLowerCase();
+                const hasSubstring = nameLower.includes(queryLower);
+
+                // If the product name contains the search query, boost the score
+                const finalScore = hasSubstring ? Math.max(similarity, 0.5) : similarity;
+
+                return {
+                    product: p,
+                    score: finalScore
+                };
+            });
+
+            scored.sort((a, b) => b.score - a.score);
+
+            // Lowered threshold: accept if similarity > 0.15 OR product name contains search term
+            // This is more lenient to ensure we get matches from all stores
+            if (scored[0].score > 0.15) {
+                bestMatches.push(scored[0].product);
+            }
+        }
+
+        return bestMatches;
     }
 
     /**

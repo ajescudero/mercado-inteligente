@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "update-data": "npx tsx data-pipeline/sepa-ingestor.ts && npx tsx data-pipeline/load-db.ts",
-    "test:supermarkets": "npx tsx test-supermarkets.ts"
+    "test:supermarkets": "npx tsx test-supermarkets.ts",
+    "test:filters": "npx tsx test-filters.ts",
+    "test:optimization": "npx tsx test-optimization.ts",
+    "test:all": "npm run test:filters && npm run test:optimization"
   },
   "dependencies": {
     "@types/lodash": "^4.17.23",
