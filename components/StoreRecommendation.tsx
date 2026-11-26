@@ -142,7 +142,7 @@ export default function StoreRecommendation({ recommendation }: Props) {
 
                                 {expandedStores.has(store.storeName) && (
                                     <div className="px-4 pb-4 space-y-2 bg-gradient-to-b from-gray-50 to-white">
-                                        {store.availableProducts.slice(0, 5).map(({ term, product }) => (
+                                        {store.availableProducts.slice(0, 5).map(({ product }) => (
                                             <div key={product.id} className="flex justify-between text-sm py-2 border-b border-gray-100 last:border-0">
                                                 <span className="text-gray-600 truncate flex-1 font-medium">{product.name}</span>
                                                 <span className="font-bold text-gray-800 ml-2">

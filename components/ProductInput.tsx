@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Plus, Search, Loader2 } from "lucide-react";
 import { debounce } from "lodash";
 
@@ -15,7 +15,7 @@ export default function ProductInput({ onAdd }: Props) {
     const [loading, setLoading] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const fetchSuggestions = useRef(
+    const fetchSuggestions = useMemo(() =>
         debounce(async (value: string) => {
             if (value.length < 2) {
                 setSuggestions([]);
@@ -33,10 +33,11 @@ export default function ProductInput({ onAdd }: Props) {
                 setLoading(false);
             }
         }, 300)
-    ).current;
+    , []);
 
     useEffect(() => {
         fetchSuggestions(term);
+        return () => fetchSuggestions.cancel();
     }, [term, fetchSuggestions]);
 
     useEffect(() => {

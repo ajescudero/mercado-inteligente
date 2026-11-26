@@ -41,7 +41,7 @@ export default function ProductSelector({ term, products, open, onClose, onSelec
                 {/* Header */}
                 <div className="p-5 border-b flex items-center justify-between bg-gray-50">
                     <div>
-                        <h2 className="text-xl font-bold text-[var(--foreground)]">Opciones para "{term}"</h2>
+                        <h2 className="text-xl font-bold text-[var(--foreground)]">Opciones para &quot;{term}&quot;</h2>
                         <p className="text-sm text-gray-500">{products.length} resultados encontrados</p>
                     </div>
                     <button

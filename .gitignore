@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -46,3 +47,24 @@ next-env.d.ts
 
 # Python test caches
 /tests/__pycache__/
+
+# Local data and acquisition artifacts (not a distribution license)
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+/temp_descargas/
+/precios_mendoza.json
+/stores_mendoza.json
+*.log
+*.backup
+__pycache__/
+*.pyc
+
+# Private preparation and local assistant state
+/docs/alignerr-preguntas-*.md
+/.impeccable/
+/CLAUDE.local.md
+/.claude/settings.local.json
+/.codex/

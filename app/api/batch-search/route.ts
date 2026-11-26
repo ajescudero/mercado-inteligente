@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { searchProduct } from '@/lib/search';
-import { BatchSearchResult, StoreRecommendation } from '@/lib/types';
+import { BatchSearchResult } from '@/lib/types';
 import { analyzeStoresByProducts, findOptimalShoppingStrategy } from '@/lib/store-optimizer';
 
 export async function POST(req: Request) {

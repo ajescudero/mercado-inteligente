@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Historical Node diagnostic intentionally uses CommonJS. */
 const Database = require('better-sqlite3');
 const path = require('path');
 

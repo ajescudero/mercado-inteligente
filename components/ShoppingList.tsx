@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ListItem, StoreRecommendation as StoreRecommendationType, BatchSearchResult } from "@/lib/types";
+import { ListItem, Product, StoreRecommendation as StoreRecommendationType, BatchSearchResult } from "@/lib/types";
 import ProductInput from "./ProductInput";
 import { Search, Check, ChevronRight, Store, AlertCircle, MapPin, Trash2, Sparkles } from "lucide-react";
 import ProductSelector from "./ProductSelector";
@@ -10,7 +10,6 @@ import StoreRecommendation from "./StoreRecommendation";
 export default function ShoppingList() {
     const [items, setItems] = useState<ListItem[]>([]);
     const [viewingItemId, setViewingItemId] = useState<string | null>(null);
-    const [mounted, setMounted] = useState(false);
     const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
     const [locationName, setLocationName] = useState<string>("");
     const [radius, setRadius] = useState<number>(3);
@@ -18,7 +17,6 @@ export default function ShoppingList() {
     const [storeRecommendation, setStoreRecommendation] = useState<StoreRecommendationType | null>(null);
 
     useEffect(() => {
-        setMounted(true);
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -62,7 +60,7 @@ export default function ShoppingList() {
         ));
     };
 
-    const handleSelectProduct = (product: any) => {
+    const handleSelectProduct = (product: Product) => {
         if (!viewingItemId) return;
         setItems(prev => prev.map(item =>
             item.id === viewingItemId
@@ -134,13 +132,6 @@ export default function ShoppingList() {
             setIsSearching(false);
         }
     };
-
-    if (!mounted) return (
-        <div className="flex flex-col items-center justify-center p-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white mb-4"></div>
-            <p className="text-white font-medium">Cargando...</p>
-        </div>
-    );
 
     const draftCount = items.filter(i => i.status === 'DRAFT').length;
     const hasSearched = items.some(i => i.status === 'FOUND' || i.status === 'NOT_FOUND');
@@ -303,7 +294,7 @@ export default function ShoppingList() {
             )}
 
             {/* Modal */}
-            {mounted && viewingItem && (
+            {viewingItem && (
                 <ProductSelector
                     term={viewingItem.term}
                     products={viewingItem.foundProducts || []}

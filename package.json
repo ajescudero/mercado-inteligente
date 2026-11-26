@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-voyager",
+  "name": "mercado-inteligente",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,10 @@
     "test:filters": "node --import tsx -e \"require('./test-filters.ts')\"",
     "test:optimization": "npx tsx test-optimization.ts",
     "test:all": "npm run test:filters && npm run test:recovery",
-    "test:recovery": "node --import tsx --test --test-isolation=none tests/*.test.ts && python3 -m unittest discover -s tests -p \"test_*.py\""
+    "test:recovery": "node --import tsx --test --test-isolation=none tests/*.test.ts && python3 -m unittest discover -s tests -p \"test_*.py\"",
+    "check": "node scripts/check.mjs",
+    "typecheck": "next typegen && tsc --noEmit",
+    "data:init": "python3 data-pipeline/init_db.py"
   },
   "dependencies": {
     "@types/lodash": "^4.17.23",

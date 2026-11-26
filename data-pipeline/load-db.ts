@@ -62,7 +62,7 @@ if (fs.existsSync(STORES_FILE)) {
                     lng: store.lng || 0
                 };
                 insertStore.run(safeStore);
-            } catch (e) {
+            } catch {
                 console.error('❌ Error insertando tienda:', store.id);
             }
         }

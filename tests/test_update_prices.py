@@ -38,6 +38,10 @@ class PriceUpdateTests(unittest.TestCase):
               INSERT INTO term_mappings VALUES ('leche');
               INSERT INTO search_cache VALUES ('leche','[]',0);''')
             con.commit();con.close()
+            # Move the fixture outside the default filename to test --database.
+            custom = root / 'selected-catalog.sqlite3'
+            live.rename(custom)
+            live = custom
             date = datetime.date.today().isoformat()
             archive = root / 'source.zip'
             html = root / 'source.html'
@@ -55,7 +59,7 @@ class PriceUpdateTests(unittest.TestCase):
                         retailer.writestr('comercio.csv', encode(['id_comercio','id_bandera','comercio_bandera_nombre'], [[chain,'1','Carrefour' if chain=='10' else 'Coto']]))
                         retailer.writestr('sucursales.csv',encode(store_fields,stores));retailer.writestr('productos.csv',encode(product_fields,products) + ('\nUltima actualizacion: '+date+'T08:30:00-03:00\n').encode())
                     master.writestr(f'{date}/retailer-{chain}.zip',data.getvalue())
-            args = ['update_prices.py','--project',str(root),'--work',str(root/'work'),'--html',str(html),'--archive',str(archive),'--publish']
+            args = ['update_prices.py','--project',str(root),'--database',str(live),'--work',str(root/'work'),'--html',str(html),'--archive',str(archive),'--publish']
             with patch.object(sys, 'argv', args), contextlib.redirect_stdout(io.StringIO()): updater.main()
             con = sqlite3.connect(live)
             self.assertEqual(con.execute('select count(*) from stores').fetchone()[0],20)

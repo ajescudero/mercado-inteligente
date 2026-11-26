@@ -66,7 +66,7 @@ def product_key(row):
     return ':'.join(('local', row['id_comercio'], row['id_bandera'], identifier))
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--project',type=pathlib.Path,default=pathlib.Path(__file__).resolve().parents[1]);ap.add_argument('--work',type=pathlib.Path);ap.add_argument('--archive',type=pathlib.Path);ap.add_argument('--html',type=pathlib.Path);ap.add_argument('--publish',action='store_true');args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('--project',type=pathlib.Path,default=pathlib.Path(__file__).resolve().parents[1]);ap.add_argument('--work',type=pathlib.Path);ap.add_argument('--archive',type=pathlib.Path);ap.add_argument('--html',type=pathlib.Path);ap.add_argument('--database',type=pathlib.Path,help='Catalog to update; defaults to <project>/shopping-list.db');ap.add_argument('--publish',action='store_true');args=ap.parse_args()
     work=args.work or args.project/'price-updates'/dt.datetime.now().strftime('%Y%m%d-%H%M%S');work.mkdir(parents=True,exist_ok=True)
     html=args.html.read_text() if args.html else urllib.request.urlopen(SOURCE,timeout=60).read().decode()
     date,url=latest(html); print('Source',date,url,flush=True)
@@ -81,7 +81,7 @@ def main():
     with zipfile.ZipFile(archive) as check:
         archive_dates=set(re.findall(r'\d{4}-\d{2}-\d{2}', '\n'.join(check.namelist())))
         if date not in archive_dates: raise ValueError('Archive contents do not match published source date')
-    live=args.project/'shopping-list.db'; staged=work/'validated.db'
+    live=(args.database or args.project/'shopping-list.db').expanduser().resolve(); staged=work/'validated.db'
     if staged.exists():raise ValueError('Staging already exists; choose a new work directory')
     old=connect_ro(live); out=sqlite3.connect(staged);old.backup(out)
     previous=old.execute('select count(*) from products').fetchone()[0];old.close()

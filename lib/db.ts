@@ -31,11 +31,19 @@ db.exec(`
   );
 `);
 
-export function getCachedSearch(term: string) {
-  return db.prepare('SELECT * FROM search_cache WHERE term = ?').get(term) as any;
+interface SearchCacheRow { term: string; results: string; updatedAt: number }
+interface TermMappingRow { user_term: string; search_terms: string; category: string; confidence: number }
+interface SearchProductRow {
+  ean: string; name: string; price: number; comercioId: string;
+  rawStoreName: string; bannerName: string | null; address: string | null;
+  locality: string | null; lat: number | null; lng: number | null; distance?: number;
 }
 
-export function setCachedSearch(term: string, results: any[]) {
+export function getCachedSearch(term: string) {
+  return db.prepare('SELECT * FROM search_cache WHERE term = ?').get(term) as SearchCacheRow | undefined;
+}
+
+export function setCachedSearch(term: string, results: unknown[]) {
   const stmt = db.prepare(`
     INSERT OR REPLACE INTO search_cache (term, results, updatedAt)
     VALUES (@term, @results, @updatedAt)
@@ -78,7 +86,7 @@ export function getTermMapping(userTerm: string): TermMapping | null {
       SELECT user_term, search_terms, category, confidence
       FROM term_mappings
       WHERE user_term = ?
-    `).get(normalized) as any;
+    `).get(normalized) as TermMappingRow | undefined;
 
     if (!row) return null;
 
@@ -147,7 +155,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
   `;
 
   try {
-    const rows = db.prepare(query).all(...params) as any[];
+    const rows = db.prepare(query).all(...params) as SearchProductRow[];
 
     const mapped = rows.map(row => {
       const brand = row.bannerName || '';
@@ -180,7 +188,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
 
     // Ranking Logic:
     // 1. Sort by price first
-    let sorted = mapped.sort((a, b) => a.price - b.price);
+    const sorted = mapped.sort((a, b) => a.price - b.price);
 
     // 2. If location is available, prioritize closer stores when prices are similar
     if (hasLocation) {

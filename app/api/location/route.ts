@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     try {
         const address = await reverseGeocode(lat, lng);
         return NextResponse.json({ address });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Geocoding failed" }, { status: 500 });
     }
 }
