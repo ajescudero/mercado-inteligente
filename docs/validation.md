@@ -47,7 +47,7 @@ A fresh local Git clone installed dependencies with npm ci from the local cache
 and passed the complete npm run check command. It did not inherit node_modules,
 build artifacts or a catalog from the working directory.
 
-All six reachable commits were checked for excluded database/archive/private
+The six commits in the initial review package (through 8197a00) were checked for excluded database/archive/private
 paths and files over 100 MiB: none remained. A targeted credential-pattern scan
 of 208 reachable text blobs found no matches. The largest historical blob was
 292,383 bytes. This is a limited pattern scan, not a security certification.
@@ -58,11 +58,18 @@ checkout. Its Git history and data files remain separate from this distribution.
 The bundled OFL license is retained byte-for-byte, including its original line
 endings.
 
+## Hosted CI
+
+The first [GitHub Actions run](https://github.com/ajescudero/mercado-inteligente/actions/runs/45733221289)
+passed for commit 8197a00cc4f2fd0c98ac530ce0db71b0d28fd8b4. The workflow used
+Node 24 and Python 3.12 and completed both npm ci and npm run check successfully.
+This provides hosted evidence in addition to the local checks above. The linked
+result applies to that commit; later commits have their own workflow results.
+
 ## Limits
 
-The GitHub workflow is configured for Node 24 and Python 3.12. It has not run on
-GitHub yet; local success is not a green hosted-CI claim. Python 3.11+ is the
-documented baseline, not a claim that every minor version was exercised.
+Python 3.11+ is the documented baseline, not a claim that every minor version
+was exercised.
 
 The earlier UI delivery recorded desktop/mobile, keyboard and failure-state
 checks. Those historical checks are not a new comprehensive visual or
