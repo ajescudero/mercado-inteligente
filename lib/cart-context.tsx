@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Product } from "@/server/supermarkets/types";
+import { catalogCartItems, refreshCatalogCart } from './cart-products';
 
 export interface CartItem extends Product {
     quantity: number;
@@ -26,12 +27,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
 
+    // One client-only hydration from browser storage; the server cannot read it.
+    /* eslint-disable react-hooks/set-state-in-effect */
     // Load from local storage
     useEffect(() => {
-        const savedCart = localStorage.getItem("shopping-cart");
+        let savedCart: string | null = null;
+        try { savedCart = localStorage.getItem("shopping-cart"); } catch { /* Storage can be unavailable in private browsing. */ }
         if (savedCart) {
             try {
-                setItems(JSON.parse(savedCart));
+                const saved = JSON.parse(savedCart);
+                if (Array.isArray(saved)) setItems(saved.filter(item => item && typeof item.id === 'string' && Number.isInteger(item.quantity) && item.quantity > 0));
             } catch (e) {
                 console.error("Failed to parse cart from local storage", e);
             }
@@ -39,10 +44,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setIsInitialized(true);
     }, []);
 
+    /* eslint-enable react-hooks/set-state-in-effect */
+
+    // Rehydrate prices/photos/labels from the current catalog, keeping quantities.
+    useEffect(() => {
+        if (!isInitialized || !items.length) return;
+        const catalogItems = catalogCartItems(items);
+        if (!catalogItems.length) return;
+        const controller = new AbortController();
+        fetch('/api/products/refresh', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: catalogItems.slice(0, 100).map(item => item.id) }), signal: controller.signal,
+        }).then(async response => {
+            if (!response.ok) return;
+            const data: { products: { id: string; product: Product | null }[] } = await response.json();
+            setItems(previous => refreshCatalogCart(previous, data.products));
+        }).catch(() => { /* Retain the saved cart if the local server is unavailable. */ });
+        return () => controller.abort();
+        // Refresh on hydration and opening the drawer, not on every price update.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isInitialized, isOpen]);
+
     // Save to local storage
     useEffect(() => {
         if (isInitialized) {
-            localStorage.setItem("shopping-cart", JSON.stringify(items));
+            try { localStorage.setItem("shopping-cart", JSON.stringify(items)); } catch { /* Keep the in-memory list usable when storage is unavailable. */ }
         }
     }, [items, isInitialized]);
 
@@ -52,7 +78,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             if (existing) {
                 return prev.map((i) =>
                     i.id === product.id && i.store === product.store
-                        ? { ...i, quantity: i.quantity + quantity }
+                        ? { ...product, quantity: Math.min(999, i.quantity + quantity) }
                         : i
                 );
             }

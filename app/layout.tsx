@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-
-const plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+import { CartProvider } from "@/lib/cart-context";
+import { CartDrawer } from "@/components/Cart/CartDrawer";
+import { DesignCredit } from "@/components/Layout/DesignCredit";
 
 export const metadata: Metadata = {
-  title: "Lista Inteligente",
-  description: "Tu lista de compras inteligente y amigable",
+  title: "MercadoInteligente · Compará precios en Mendoza",
+  description: "Compará productos, precios y sucursales de supermercados en Mendoza.",
   manifest: "/manifest.json",
   icons: {
     apple: "/icons/icon-192.png",
@@ -14,11 +14,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6366f1",
+  themeColor: "#23aa49",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
@@ -27,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className={plusJakarta.className}>{children}</body>
+    <html lang="es" suppressHydrationWarning>
+      <body><CartProvider>{children}<CartDrawer/><DesignCredit/></CartProvider></body>
     </html>
   );
 }

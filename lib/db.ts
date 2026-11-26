@@ -1,8 +1,9 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { productImageUrl } from './product-image';
 
-const dbPath = path.join(process.cwd(), 'shopping-list.db');
-export const db = new Database(dbPath);
+const dbPath = process.env.PRICES_DB_PATH || path.join(process.cwd(), 'shopping-list.db');
+export const db = new Database(dbPath, { fileMustExist: true });
 
 /**
  * Register a Haversine Distance function in SQLite
@@ -58,17 +59,6 @@ export interface DbProduct {
   brand: string;
   distance?: number;
 }
-
-const COMERCIO_BRANDS: Record<string, string> = {
-  '10': 'Vea / Jumbo',
-  '11': 'ChangoMás',
-  '12': 'Carrefour',
-  '13': 'Coto',
-  '15': 'La Anónima',
-  '16': 'Libertad',
-  '19': 'Makro',
-  '24': 'Día',
-};
 
 export interface TermMapping {
   user_term: string;
@@ -140,6 +130,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
       p.price,
       p.comercioId,
       s.name as rawStoreName,
+      sd.banner_name as bannerName,
       s.address,
       s.locality,
       s.lat,
@@ -147,6 +138,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
       ${hasLocation ? `, haversine(${userLat}, ${userLng}, s.lat, s.lng) as distance` : ''}
     FROM products p
     JOIN stores s ON p.storeId = s.id
+    LEFT JOIN store_details sd ON sd.store_id=p.storeId
     WHERE price > 0 
       AND (${whereClause})
       ${hasLocation ? `AND haversine(${userLat}, ${userLng}, s.lat, s.lng) < ${maxDistance}` : ''}
@@ -158,7 +150,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
     const rows = db.prepare(query).all(...params) as any[];
 
     const mapped = rows.map(row => {
-      const brand = COMERCIO_BRANDS[row.comercioId] || '';
+      const brand = row.bannerName || '';
       let storeName = row.rawStoreName || 'Sucursal';
 
       if (brand) {
@@ -170,9 +162,7 @@ export function searchProductsInDb(term: string, userLat?: number, userLng?: num
       }
 
       const ean = row.ean || '';
-      const imageUrl = (ean.length >= 12 && ean !== '0' && ean !== '1')
-        ? `https://imagenes.preciosclaros.gob.ar/productos/${ean}.jpg`
-        : undefined;
+      const imageUrl = productImageUrl(ean);
 
       return {
         id: `${row.ean}-${row.name}-${row.rawStoreName}-${row.price}`,

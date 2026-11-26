@@ -1,115 +1,48 @@
-import * as cheerio from 'cheerio';
-import { Product, SupermarketResponse } from './types';
-import { parseArgentinePrice, RateLimiter } from './utils';
+import type { SupermarketResponse } from './types';
+import { parseAtomoProducts, type AtomoPayload } from './atomo-parser';
 
-const ATOMO_API_BASE = 'https://atomoconviene.com/atomo-ecommerce/module/ambjolisearch/jolisearch';
-const rateLimiter = new RateLimiter(1); // 1 request per second
-
-interface AtomoResponse {
-    rendered_products: string;
-}
+const ENDPOINT = 'https://atomoconviene.com/atomo-ecommerce/module/ambjolisearch/jolisearch';
+const cache = new Map<string, { expires: number; response: SupermarketResponse }>();
+const pending = new Map<string, Promise<SupermarketResponse>>();
+let nextRequestAt = 0;
 
 export async function searchAtomo(query: string): Promise<SupermarketResponse> {
+    const term = query.trim();
     const timestamp = new Date().toISOString();
+    if (term.length < 2 || term.length > 120) return { products: [], source: 'atomo', timestamp, error: 'Buscá entre 2 y 120 caracteres.' };
+    const key = term.toLocaleLowerCase('es-AR');
+    const cached = cache.get(key);
+    if (cached && cached.expires > Date.now()) return cached.response;
+    if (pending.has(key)) return pending.get(key)!;
+    if (pending.size >= 4) return { products: [], source: 'atomo', timestamp, error: 'Átomo está ocupado. Volvé a buscar en unos segundos.' };
 
-    try {
-        await rateLimiter.waitIfNeeded();
-
-        console.log(`[Atomo] Searching for: ${query}`);
-
-        // ajax=0 returns a JSON with "rendered_products" HTML string containing all results
-        const url = `${ATOMO_API_BASE}?ajax=0&s=${encodeURIComponent(query)}`;
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-                'Accept': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data: AtomoResponse = await response.json();
-
-        if (!data.rendered_products) {
-            console.warn('[Atomo] No rendered_products in response');
-            return { products: [], source: 'atomo', timestamp };
-        }
-
-        const $ = cheerio.load(data.rendered_products);
-        const products: Product[] = [];
-
-        $('.product-miniature').each((_, el) => {
-            try {
-                const $el = $(el);
-                const titleLink = $el.find('.product-title a');
-                const name = titleLink.text().trim();
-                const link = titleLink.attr('href');
-                const priceStr = $el.find('.product-price-and-shipping .price').text().trim();
-
-                // Image: try data-src first (lazyload), then src
-                const imgElement = $el.find('.thumbnail img');
-                const image = imgElement.attr('data-src') || imgElement.attr('src');
-
-                if (!name || !link || !priceStr) {
-                    return;
-                }
-
-                const price = parseArgentinePrice(priceStr);
-
-                // Extract category from URL: https://atomoconviene.com/atomo-ecommerce/[category]/[id-name].html
-                let category: string | undefined;
-                if (link) {
-                    try {
-                        const urlObj = new URL(link);
-                        const pathSegments = urlObj.pathname.split('/').filter(Boolean);
-                        // pathSegments usually: ['atomo-ecommerce', 'category-slug', 'product-slug.html']
-                        if (pathSegments.length >= 2) {
-                            const slug = pathSegments[1];
-                            category = slug
-                                .replace(/-/g, ' ')
-                                .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize
-                        }
-                    } catch (e) {
-                        // Ignore URL parsing errors
-                    }
-                }
-
-                if (price && price > 0) {
-                    products.push({
-                        id: link, // Use URL as ID
-                        name,
-                        price,
-                        image: image || '',
-                        store: 'atomo',
-                        storeLocation: 'Mendoza',
-                        url: link,
-                        category
-                    });
-                }
-            } catch (e) {
-                console.warn('[Atomo] Failed to parse product:', e);
-            }
-        });
-
-        // Deduplicate just in case
-        const uniqueProducts = Array.from(new Map(products.map(p => [p.id, p])).values());
-
-        console.log(`[Atomo] Found ${uniqueProducts.length} products`);
-
-        return {
-            products: uniqueProducts,
-            source: 'atomo',
-            timestamp,
-        };
-    } catch (error) {
-        console.error('[Atomo] Search failed:', error);
-        return {
-            products: [],
-            source: 'atomo',
-            timestamp,
-            error: error instanceof Error ? error.message : 'Unknown error',
-        };
-    }
+    // Reserve the next slot before waiting, including concurrent searches.
+    const wait = Math.max(0, nextRequestAt - Date.now());
+    nextRequestAt = Date.now() + wait + 1000;
+    const task = (async (): Promise<SupermarketResponse> => {
+        try {
+            if (wait) await new Promise(resolve => setTimeout(resolve, wait));
+            const response = await fetch(`${ENDPOINT}?ajax=0&s=${encodeURIComponent(term)}`, {
+                headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(7000), cache: 'no-store',
+            });
+            if (!response.ok) throw new Error('Source unavailable');
+            const data: AtomoPayload = await response.json();
+            if (!Array.isArray(data.products)) throw new Error('Unexpected source format');
+            const checkedAt = new Date().toISOString();
+            const products = parseAtomoProducts(data, checkedAt);
+            const total = Number(data.pagination?.total_items);
+            const result: SupermarketResponse = {
+                products, source: 'atomo', timestamp: checkedAt,
+                total: Number.isSafeInteger(total) && total >= products.length ? total : products.length,
+                truncated: Number.isSafeInteger(total) && total > products.length,
+            };
+            if (cache.size >= 64) cache.delete(cache.keys().next().value!);
+            cache.set(key, { response: result, expires: Date.now() + 5 * 60_000 });
+            return result;
+        } catch {
+            return { products: [], source: 'atomo', timestamp, error: 'No pudimos consultar Átomo online. Volvé a buscar o abrí su tienda.' };
+        } finally { pending.delete(key); }
+    })();
+    pending.set(key, task);
+    return task;
 }

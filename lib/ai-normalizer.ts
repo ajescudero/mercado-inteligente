@@ -1,9 +1,5 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
 /**
  * Uses AI to understand what products the user is looking for
  * and returns normalized search terms that match database product names.
@@ -11,10 +7,10 @@ const openai = new OpenAI({
  * Example: "leche" → ["LECHE ENTERA", "LECHE DESCREMADA", "LECHE CHOCOLATADA"]
  */
 export async function normalizeSearchTerm(userTerm: string): Promise<string[]> {
-    if (!userTerm || userTerm.length < 2) return [];
+    if (!userTerm || userTerm.length < 2 || process.env.ENABLE_AI_SUGGESTIONS !== 'true' || !process.env.OPENAI_API_KEY) return [];
 
     try {
-        console.log(`🤖 [AI] Calling OpenAI for term: "${userTerm}"`);
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 10000, maxRetries: 0 });
 
         const response = await openai.chat.completions.create({
             model: 'gpt-4o-mini',
@@ -47,7 +43,6 @@ Ejemplo para "leche":
         });
 
         const content = response.choices[0]?.message?.content?.trim();
-        console.log(`🤖 [AI] OpenAI response for "${userTerm}": ${content}`);
 
         if (!content) return [];
 

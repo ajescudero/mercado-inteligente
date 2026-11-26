@@ -1,230 +1,30 @@
-import React, { useRef, useEffect, useState } from 'react';
+'use client';
+import { useRef, useState } from 'react';
 import { useCart } from '@/lib/cart-context';
-import { X, Trash2, ShoppingBag, Minus, Plus, TrendingDown } from 'lucide-react';
+import { X, Trash2, Minus, Plus, TrendingDown } from 'lucide-react';
+import { storeTitle } from '@/lib/cart-optimization';
 import { OptimizationModal } from './OptimizationModal';
-
-export function CartDrawer() {
-    const { items, removeItem, updateQuantity, totalPrice, isOpen, setIsOpen, clearCart } = useCart();
-    const [isOptimizeOpen, setIsOptimizeOpen] = useState(false);
-    const [showClearConfirm, setShowClearConfirm] = useState(false);
-    const drawerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen, setIsOpen]);
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('es-AR', {
-            style: 'currency',
-            currency: 'ARS',
-            minimumFractionDigits: 0,
-        }).format(price);
-    };
-
-    return (
-        <>
-            {/* Overlay */}
-            <div
-                className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                    }`}
-            />
-
-            {/* Drawer */}
-            <div
-                ref={drawerRef}
-                className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
-                    }`}
-            >
-                {/* Header */}
-                <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white">
-                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <ShoppingBag size={24} /> Mi Carrito
-                        {items.length > 0 && (
-                            <span className="text-sm font-normal text-gray-500">({items.length})</span>
-                        )}
-                    </h2>
-                    <div className="flex items-center gap-2">
-                        {items.length > 0 && (
-                            <button
-                                onClick={() => setShowClearConfirm(true)}
-                                className="p-2 hover:bg-red-50 rounded-full transition-colors text-gray-500 hover:text-red-600"
-                                title="Vaciar carrito"
-                            >
-                                <Trash2 size={20} />
-                            </button>
-                        )}
-                        <button
-                            onClick={() => setIsOpen(false)}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-gray-800"
-                        >
-                            <X size={24} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                    {items.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                            <ShoppingBag size={64} className="mb-4 opacity-20" />
-                            <p className="text-lg font-medium">Tu carrito está vacío</p>
-                            <p className="text-sm">¡Empieza a agregar productos!</p>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="mt-6 text-blue-600 hover:text-blue-800 font-medium"
-                            >
-                                Volver a la tienda
-                            </button>
-                        </div>
-                    ) : (
-                        items.map((item) => (
-                            <div key={`${item.store}-${item.id}`} className="flex gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100 relative group">
-                                {/* Image */}
-                                <div className="w-20 h-20 bg-white rounded-md flex items-center justify-center p-2 border border-gray-200 shrink-0">
-                                    {item.image ? (
-                                        <img src={item.image} alt={item.name} className="max-w-full max-h-full object-contain" />
-                                    ) : (
-                                        <ShoppingBag size={24} className="text-gray-300" />
-                                    )}
-                                </div>
-
-                                {/* Info */}
-                                <div className="flex-grow min-w-0 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex justify-between items-start gap-2">
-                                            <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">{item.name}</h3>
-                                            <button
-                                                onClick={() => removeItem(item.id, item.store)}
-                                                className="text-gray-400 hover:text-red-500 -mt-1 -mr-1 p-1"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                        <p className="text-xs text-gray-500 mt-1 uppercase">{item.store}</p>
-                                    </div>
-
-                                    <div className="flex items-center justify-between mt-2">
-                                        <p className="font-bold text-gray-900">{formatPrice(item.price)}</p>
-
-                                        {/* Quantity Controls */}
-                                        <div className="flex items-center bg-white border border-gray-300 rounded-md h-8">
-                                            <button
-                                                onClick={() => updateQuantity(item.id, item.store, item.quantity - 1)}
-                                                className="w-8 h-full flex items-center justify-center hover:bg-gray-100 text-gray-600"
-                                            >
-                                                <Minus size={14} />
-                                            </button>
-                                            <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                                            <button
-                                                onClick={() => updateQuantity(item.id, item.store, item.quantity + 1)}
-                                                className="w-8 h-full flex items-center justify-center hover:bg-gray-100 text-gray-600"
-                                            >
-                                                <Plus size={14} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-                {/* Footer */}
-                {items.length > 0 && (
-                    <div className="p-4 border-t border-gray-100 bg-gray-50">
-                        {/* Store Breakdown */}
-                        <div className="mb-4 space-y-2">
-                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Resumen por Supermercado</h3>
-                            {Object.entries(
-                                items.reduce((acc, item) => {
-                                    acc[item.store] = (acc[item.store] || 0) + (item.price * item.quantity);
-                                    return acc;
-                                }, {} as Record<string, number>)
-                            ).map(([store, total]) => (
-                                <div key={store} className="flex justify-between text-sm">
-                                    <span className="capitalize text-gray-700">{store}</span>
-                                    <span className="font-medium">{formatPrice(total)}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="border-t border-gray-200 my-3"></div>
-
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-gray-900 font-bold">Total Estimado</span>
-                            <span className="text-2xl font-bold text-blue-600">{formatPrice(totalPrice)}</span>
-                        </div>
-                        <button
-                            onClick={() => setIsOptimizeOpen(true)}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 group overflow-hidden relative"
-                        >
-                            <div className="absolute inset-0 bg-blue-400/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                            <TrendingDown size={20} className="relative z-10" />
-                            <span className="relative z-10">Optimizar Compra</span>
-                        </button>
-                        <p className="text-xs text-center text-gray-400 mt-2">
-                            Los precios son estimados y pueden variar en caja.
-                        </p>
-                    </div>
-                )}
-            </div>
-
-            {/* Clear Cart Confirmation Modal */}
-            {showClearConfirm && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                                <Trash2 className="text-red-600" size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900">¿Vaciar carrito?</h3>
-                                <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
-                            </div>
-                        </div>
-                        <p className="text-gray-600 mb-6">
-                            Se eliminarán {items.length} {items.length === 1 ? 'producto' : 'productos'} del carrito.
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setShowClearConfirm(false)}
-                                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={() => {
-                                    clearCart();
-                                    setShowClearConfirm(false);
-                                }}
-                                className="flex-1 px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-lg shadow-red-200"
-                            >
-                                Vaciar Carrito
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Optimization Modal */}
-            <OptimizationModal
-                isOpen={isOptimizeOpen}
-                onClose={() => setIsOptimizeOpen(false)}
-            />
-        </>
-    );
+import { ProductImage } from '../Product/ProductImage';
+import { Modal } from '../UI/Modal';
+import { money } from '../Product/ProductCard';
+import { catalogCartItems, isOnlineProduct } from '@/lib/cart-products';
+export function CartDrawer(){
+  const {items,removeItem,updateQuantity,totalPrice,isOpen,setIsOpen,clearCart}=useCart();
+  const comparableItems=catalogCartItems(items);const hasOnline=items.some(isOnlineProduct);
+  const [optimize,setOptimize]=useState(false);const [confirm,setConfirm]=useState(false);
+  const closeButton=useRef<HTMLButtonElement>(null);
+  const focusAfterRemoval=()=>closeButton.current?.focus();
+  const close=()=>{setIsOpen(false);setConfirm(false);setOptimize(false);};
+  return <><Modal open={isOpen} onClose={close} titleId="cart-title" side="right">
+    <div className="dialog-header"><h2 id="cart-title" className="text-xl font-bold">Mi lista {items.length>0 && <span className="text-sm font-normal text-muted">({items.length})</span>}</h2><button ref={closeButton} className="icon-button" onClick={close} aria-label="Cerrar mi lista"><X aria-hidden="true"/></button></div>
+    <div className="dialog-body">
+      {!items.length?<div className="py-8"><h3 className="text-lg font-semibold">Tu lista está vacía</h3><p className="text-muted mt-2">Elegí una oferta de los resultados para empezar tu lista.</p><button className="button-secondary mt-5" onClick={close}>Volver a los productos</button></div>:
+        <div className="divide-y divide-line">{items.map(item=><div key={item.id+'-'+item.store} className="cart-item">
+          <div className="flex gap-3"><div className="cart-item-photo"><ProductImage src={item.image} name={item.name} ean={item.ean}/></div><div className="flex-1 min-w-0"><h3 className="font-semibold text-sm">{item.name}</h3><p className="text-sm text-muted mt-1">{item.presentation}</p><p className="text-xs text-muted mt-1">{storeTitle(item)}</p>{isOnlineProduct(item)?<p className="text-xs text-muted mt-2">Precio online {item.sourceDate?`consultado el ${new Date(item.sourceDate).toLocaleDateString('es-AR')}`:'sin fecha de consulta'}. No se actualiza al abrir la lista.{item.url && <> <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-brand-ink underline">Revisar en Átomo<span className="sr-only"> (abre otra pestaña)</span></a></>}</p>:item.unavailable && <p className="text-sm text-amber-800 mt-2">No figura en el catálogo actual. Volvé a buscarlo antes de comparar.</p>}</div></div>
+          <div className="flex flex-wrap justify-between items-center gap-2 mt-3"><span className="font-bold tabular-nums">{money(item.price*item.quantity)}</span><div className="quantity-controls"><button className="icon-button border border-line" aria-label={`Quitar una unidad de ${item.name}`} onClick={()=>{if(item.quantity===1)focusAfterRemoval();updateQuantity(item.id,item.store,item.quantity-1);}}><Minus size={16} aria-hidden="true"/></button><span className="w-8 text-center tabular-nums" aria-label={`${item.quantity} unidades`}>{item.quantity}</span><button className="icon-button quantity-plus" disabled={item.quantity>=999} aria-label={`Agregar una unidad de ${item.name}`} onClick={()=>updateQuantity(item.id,item.store,item.quantity+1)}><Plus size={16} aria-hidden="true"/></button><button className="icon-button" aria-label={`Quitar ${item.name} de la lista`} onClick={()=>{focusAfterRemoval();removeItem(item.id,item.store);}}><Trash2 size={18} aria-hidden="true"/></button></div></div>
+        </div>)}</div>}
+      {items.length>0 && <div className="pt-4 border-t border-line">{confirm?<div><p className="text-sm">¿Quitar los {items.length} productos de la lista?</p><div className="flex gap-3 mt-3"><button className="button-secondary" onClick={()=>{focusAfterRemoval();setConfirm(false);}}>Conservar lista</button><button className="button-secondary text-red-700" onClick={()=>{focusAfterRemoval();clearCart();setConfirm(false);}}>Vaciar lista</button></div></div>:<button className="text-sm text-muted underline min-h-11" onClick={()=>{focusAfterRemoval();setConfirm(true);}}>Vaciar lista</button>}</div>}
+    </div>
+    {items.length>0 && <div className="dialog-footer"><div className="flex justify-between items-center gap-3 mb-3"><span className="font-semibold">Total estimado</span><span className="cart-total text-2xl font-bold tabular-nums">{money(totalPrice)}</span></div><button className="button-primary w-full" disabled={!comparableItems.length || comparableItems.some(i=>i.unavailable)} onClick={()=>setOptimize(true)}><TrendingDown size={18} aria-hidden="true"/>{hasOnline?'Comparar productos SEPA':'Comparar mi lista'}</button><p className="text-xs text-muted mt-3">{hasOnline?'Átomo online se incluye en el total y se conserva en tu lista. La comparación entre sucursales usa sólo los productos SEPA.':'Comparamos los mismos productos entre sucursales SEPA.'} Este total sólo suma productos. Al comparar podés estimar traslados y envíos.</p></div>}
+  </Modal><OptimizationModal isOpen={optimize} onClose={()=>setOptimize(false)}/></>;
 }

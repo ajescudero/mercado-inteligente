@@ -1,0 +1,732 @@
+{
+  "10-2-289": {
+    "lat": -33.036676,
+    "lng": -68.878842,
+    "address": "Azcuénaga 51",
+    "departmentId": "50063",
+    "department": "Luján de Cuyo",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-841": {
+    "lat": -32.87459,
+    "lng": -68.85606,
+    "address": "Paso de los Andes 2212",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-1-29": {
+    "lat": -32.885049,
+    "lng": -68.848197,
+    "address": "Las Heras 798",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-843": {
+    "lat": -32.892206,
+    "lng": -68.843094,
+    "address": "Montevideo 244",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-836": {
+    "lat": -32.898999,
+    "lng": -68.855476,
+    "address": "Pueyrredón 283",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-290": {
+    "lat": -32.903094,
+    "lng": -68.852428,
+    "address": "Beltrán 2078",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-863": {
+    "lat": -32.72012,
+    "lng": -68.59596,
+    "address": "Sarmiento 119",
+    "departmentId": "50056",
+    "department": "Lavalle",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-283": {
+    "lat": -32.885582,
+    "lng": -68.84228,
+    "address": "Av. Las Heras 306",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-261": {
+    "lat": -32.89,
+    "lng": -68.840497,
+    "address": "Rivadavia 57",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-286": {
+    "lat": -33.364039,
+    "lng": -69.144079,
+    "address": "Avenida Belgrano 1170",
+    "departmentId": "50126",
+    "department": "Tupungato",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-834": {
+    "lat": -32.89219,
+    "lng": -68.84905,
+    "address": "san lorenzo 690",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-269": {
+    "lat": -32.875259,
+    "lng": -68.847366,
+    "address": "Tiburcio Benegas 2306",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-288": {
+    "lat": -32.868658,
+    "lng": -68.852646,
+    "address": "Jorge A. Calle 631",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-267": {
+    "lat": -32.881388,
+    "lng": -68.85135,
+    "address": "Roque Saenz Peña 121",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-822": {
+    "lat": -32.88841,
+    "lng": -68.841667,
+    "address": "Avenida España 1244",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-862": {
+    "lat": -32.882388,
+    "lng": -68.844787,
+    "address": "Godoy Cruz 555",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-851": {
+    "lat": -32.986229,
+    "lng": -68.79137,
+    "address": "Ozamis 31",
+    "departmentId": "50070",
+    "department": "Maipú",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-842": {
+    "lat": -33.056205,
+    "lng": -68.825302,
+    "address": "Juan Agustín Maza 2777",
+    "departmentId": "50070",
+    "department": "Maipú",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-1-17": {
+    "lat": -32.908234,
+    "lng": -68.789274,
+    "address": "Av. Acceso Este Lateral Sur 0",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-833": {
+    "lat": -32.89472,
+    "lng": -68.839906,
+    "address": "Avenida Vicente Zapata 42",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-4-507": {
+    "lat": -33.082116,
+    "lng": -68.470434,
+    "address": "Balcarce 141 141",
+    "departmentId": "50098",
+    "department": "San Martín",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-857": {
+    "lat": -32.928741,
+    "lng": -68.844916,
+    "address": "Perito Moreno 341",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-4-59": {
+    "lat": -32.922308,
+    "lng": -68.847499,
+    "address": "SAN MARTIN 169 169",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-282": {
+    "lat": -32.894355,
+    "lng": -68.845102,
+    "address": "Av. Colón 324",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-276": {
+    "lat": -32.89188,
+    "lng": -68.855641,
+    "address": "Aristides Villanueva 347",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-3-875": {
+    "lat": -32.923427,
+    "lng": -68.738472,
+    "address": "Bandera de los Andes 9467",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "10-2-287": {
+    "lat": -32.877586,
+    "lng": -68.855222,
+    "address": "Suipacha 556",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "12-1-209": {
+    "lat": -32.871591,
+    "lng": -68.843574,
+    "address": "Av. Peru 2760",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "11-2-1015": {
+    "lat": -32.978813,
+    "lng": -68.797142,
+    "address": "MAZA 470",
+    "departmentId": "50070",
+    "department": "Maipú",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "11-2-1067": {
+    "lat": -33.079826,
+    "lng": -68.482803,
+    "address": "BOULOGNE SUR MER 700",
+    "departmentId": "50098",
+    "department": "San Martín",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "11-5-1005": {
+    "lat": -32.850687,
+    "lng": -68.858646,
+    "address": "BOULOGNE SUR MER Y REGALADO OLGUIN 0",
+    "departmentId": "50049",
+    "department": "Las Heras",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "11-5-1068": {
+    "lat": -32.951366,
+    "lng": -68.858596,
+    "address": "AVENIDA SAN MARTIN SUR  2575",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "11-5-3613": {
+    "lat": -32.91451,
+    "lng": -68.825287,
+    "address": "MOLDES 1023",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "24-1-358": {
+    "lat": -34.6155845944175,
+    "lng": -68.33015149444094,
+    "address": "Hipólito Irigoyen 50",
+    "departmentId": "50105",
+    "department": "San Rafael",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "24-1-381": {
+    "lat": -32.88887,
+    "lng": -68.84269,
+    "address": "Patricias Mendocinas 1195",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-914": {
+    "lat": -35.4752,
+    "lng": -69.5916,
+    "address": "Calle Av.Roca s/n entre Villa del Milagro y Calle 0",
+    "departmentId": "50077",
+    "department": "Malargüe",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-546": {
+    "lat": -32.876,
+    "lng": -68.8836,
+    "address": "Cerro Siete Colores 2496",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-548": {
+    "lat": -33.7763,
+    "lng": -69.062,
+    "address": "BOSCO SAN JUAN 462",
+    "departmentId": "50091",
+    "department": "San Carlos",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-855": {
+    "lat": -32.8681,
+    "lng": -68.8564,
+    "address": "Jorge A. Calle Esq. Neuquen 0",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-856": {
+    "lat": -32.8411,
+    "lng": -68.8213,
+    "address": "Independencia e/Chac 0",
+    "departmentId": "50049",
+    "department": "Las Heras",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-857": {
+    "lat": -32.914,
+    "lng": -68.8228,
+    "address": "Las Cañas 1833",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-3-5222": {
+    "lat": -32.9169,
+    "lng": -68.838,
+    "address": "BALCARCE GONZALEZ GDOR GRAL JUAN RAMON 897",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-3-5225": {
+    "lat": -32.9798,
+    "lng": -68.8582,
+    "address": "AVENIDA SAN MARTIN 6279",
+    "departmentId": "50063",
+    "department": "Luján de Cuyo",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-170": {
+    "lat": -32.9174,
+    "lng": -68.8461,
+    "address": "AVENIDA SAN MARTIN SUR GRAL JOSE DE 698",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-171": {
+    "lat": -32.9393,
+    "lng": -68.8347,
+    "address": "Sarmiento Domindo Faustino 998",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-172": {
+    "lat": -32.8942,
+    "lng": -68.789,
+    "address": "Godoy Cruz DR. tomas 3825",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-173": {
+    "lat": -32.9039,
+    "lng": -68.8034,
+    "address": "Ignacio MOlina 325",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-174": {
+    "lat": -32.8897,
+    "lng": -68.859,
+    "address": "Paso de los Andes 850",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://supermercadosvea.com.ar/mendoza/",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-175": {
+    "lat": -32.9127,
+    "lng": -68.8762,
+    "address": "America 2780",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-176": {
+    "lat": -32.9414,
+    "lng": -68.8483,
+    "address": "Perito Moreno 1481",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-179": {
+    "lat": -32.8512,
+    "lng": -68.8412,
+    "address": "San Miguel 1650",
+    "departmentId": "50049",
+    "department": "Las Heras",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-180": {
+    "lat": -32.8707,
+    "lng": -68.8337,
+    "address": "SANTIAGO DEL ESTERO PROVINCIA DE 25",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-182": {
+    "lat": -33.0818,
+    "lng": -68.4722,
+    "address": "9 de Julio 100",
+    "departmentId": "50098",
+    "department": "San Martín",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-183": {
+    "lat": -33.0863,
+    "lng": -68.4807,
+    "address": "Perrupato 356",
+    "departmentId": "50098",
+    "department": "San Martín",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-184": {
+    "lat": -33.0708,
+    "lng": -68.4729,
+    "address": "Lavalle 942",
+    "departmentId": null,
+    "department": null,
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": "La localidad y las coordenadas del comercio no coinciden; departamento por verificar."
+  },
+  "9-1-185": {
+    "lat": -33.0325,
+    "lng": -68.8777,
+    "address": "san martin 1211",
+    "departmentId": null,
+    "department": null,
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": "La localidad y las coordenadas del comercio no coinciden; departamento por verificar."
+  },
+  "9-1-187": {
+    "lat": -32.9824,
+    "lng": -68.7883,
+    "address": "Vasquez Padre 328",
+    "departmentId": "50070",
+    "department": "Maipú",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-188": {
+    "lat": -32.8997,
+    "lng": -68.8598,
+    "address": "Paso de los Andes 82",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-189": {
+    "lat": -32.9018,
+    "lng": -68.7971,
+    "address": "ACCESO ESTE 3280",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-190": {
+    "lat": -32.8628,
+    "lng": -68.8222,
+    "address": "Moyano Lisandro 302",
+    "departmentId": "50049",
+    "department": "Las Heras",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-191": {
+    "lat": -34.6128,
+    "lng": -68.3403,
+    "address": "Av. Yrigoyen Presindente 875",
+    "departmentId": "50105",
+    "department": "San Rafael",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-192": {
+    "lat": -32.9557,
+    "lng": -68.8577,
+    "address": "R. Panamericana 2675",
+    "departmentId": "50021",
+    "department": "Godoy Cruz",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-196": {
+    "lat": -32.8884,
+    "lng": -68.8252,
+    "address": "MATIENZO BENJAMIN 936",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-220": {
+    "lat": -33.0359,
+    "lng": -68.879,
+    "address": "SAN MARTIN 880",
+    "departmentId": "50063",
+    "department": "Luján de Cuyo",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-398": {
+    "lat": -32.9062,
+    "lng": -68.7829,
+    "address": "Bandera de los Andes 10008",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-399": {
+    "lat": -33.0865,
+    "lng": -68.4619,
+    "address": "Tropero Sosa 15",
+    "departmentId": "50098",
+    "department": "San Martín",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-400": {
+    "lat": -32.9029,
+    "lng": -68.8329,
+    "address": "Pedro Vargas 355",
+    "departmentId": "50028",
+    "department": "Guaymallén",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-401": {
+    "lat": -32.9122,
+    "lng": -68.7858,
+    "address": "Urquiza 3620",
+    "departmentId": null,
+    "department": null,
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": "La localidad y las coordenadas del comercio no coinciden; departamento por verificar."
+  },
+  "9-1-402": {
+    "lat": -32.8821,
+    "lng": -68.8415,
+    "address": "PATRICIAS MENDOCINAS 1730",
+    "departmentId": "50007",
+    "department": "Capital",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-545": {
+    "lat": -33.3636,
+    "lng": -69.1436,
+    "address": "LINIERS SANTIAGO DE 235",
+    "departmentId": "50126",
+    "department": "Tupungato",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-584": {
+    "lat": -34.6205,
+    "lng": -68.3171,
+    "address": "Av. Mitre y Patricias Mendocinas 0",
+    "departmentId": "50105",
+    "department": "San Rafael",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-803": {
+    "lat": -34.9666,
+    "lng": -67.7,
+    "address": "AVENIDA LIBERTADOR SAN MARTIN NORTE 229",
+    "departmentId": "50014",
+    "department": "General Alvear",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  },
+  "9-1-868": {
+    "lat": -34.6242,
+    "lng": -68.3339,
+    "address": "AVENIDA EL LIBERTADOR 755",
+    "departmentId": "50105",
+    "department": "San Rafael",
+    "source": "https://apis.datos.gob.ar/georef/api/v2.0/ubicacion",
+    "checkedAt": "2026-11-15",
+    "warning": null
+  }
+}
